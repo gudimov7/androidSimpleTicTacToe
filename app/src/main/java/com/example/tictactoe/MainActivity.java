@@ -21,29 +21,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
 
     private Button [] buttons;          // Global variable for playing buttons
+    private Button reset;               // Global variable for reset button
     private GridLayout gridLayout;      // Global variable for game layout
     private static int turnsCount = 0;  // Global static variable for turns count
 
 
-    //Oncreate is the first function that starts the activity.
+    //onCreate is the first function that starts the activity.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        gridLayout = findViewById(R.id.grid_layout);    //get layout variable from View
-        buttons = new Button[9];                        //create 9 new buttons array
+        gridLayout = findViewById(R.id.grid_layout);    //get layout variable from View by id
+        reset = findViewById(R.id.reset);               //get reset button from view by id
+        reset.setOnClickListener(v -> reset());         //lambda expression to initiate new game on button click
+        reset();                                        //start new Game
 
-        for(int i = 0; i < buttons.length; i ++) {      // loop on buttons array to create new buttons and add them to the layout
-
-            buttons[i] = new Button(this);      //create new button
-            buttons[i].setWidth(50);                //set button width to 50px
-            buttons[i].setHeight(50);               //set button height to 50px
-            buttons[i].setTextSize(16);             //set font size on 16px
-            buttons[i].setId((i + 1) * 10000);      //set button id with loop index * 10000
-            buttons[i].setOnClickListener(this);    //add button on click listener
-            gridLayout.addView(buttons[i]);         //add button to layout
-
+    }
+    @Override
+    public void onClick(View v) {
+        /**
+         * function that runs every time button clicked from listener
+         * check if there is a winner or turns maxed out
+         * every time player's play, initiate AI player
+         */
+        if (isWinner() || turnsCount == 9)             // do nothing if there is a winner already or turns maxed out
+            return;
+        for(Button b: buttons) {    //loop over buttons and match with button that initiated click listener
+            if(b.getId() == v.getId() && b.getText().toString().equals("")) {   //if button match and its empty
+                b.setText("X");                                                 //set button text with player's 'X'
+                turnsCount ++;                                                  //increase turns count by one
+            }
         }
+        if(turnsCount %2 == 1)                                                  //run AI method every second turn
+            playWithAI();                                                       //call AI method
+        isWinner();                                                             //check if there is a winner
 
     }
 
@@ -98,54 +109,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         else return false;
 
     }
-    private void promptWinner(int btn1, int btn2, int btn3) {
+    private void promptWinner(int holder1, int holder2, int holder3) {
         /**
          * Prompt A winner if there is one
          * by changing background color to RED
          * and font color to White
          * additionally prompt with Toast message on the screen
          */
-        buttons[btn1].setBackgroundColor(Color.RED);    //set btn background color RED
-        buttons[btn1].setTextColor(Color.WHITE);        //set btn font Color White
+        buttons[holder1].setBackgroundColor(Color.RED);    //set btn background color RED
+        buttons[holder1].setTextColor(Color.WHITE);        //set btn font Color White
 
-        buttons[btn2].setBackgroundColor(Color.RED);    //set btn background color RED
-        buttons[btn2].setTextColor(Color.WHITE);        //set btn font Color White
+        buttons[holder2].setBackgroundColor(Color.RED);    //set btn background color RED
+        buttons[holder2].setTextColor(Color.WHITE);        //set btn font Color White
 
-        buttons[btn3].setBackgroundColor(Color.RED);    //set btn background color RED
-        buttons[btn3].setTextColor(Color.WHITE);        //set btn font Color White
+        buttons[holder3].setBackgroundColor(Color.RED);    //set btn background color RED
+        buttons[holder3].setTextColor(Color.WHITE);        //set btn font Color White
         /*Toast message of the winner*/
-        Toast.makeText(this, "And the Winner is :" + buttons[btn1].getText().toString(), Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "And the Winner is :" + buttons[holder1].getText().toString(), Toast.LENGTH_LONG).show();
 
     }
-
-    @Override
-    public void onClick(View v) {
-        /**
-         * function that runs every time button clicked from listener
-         * check if there is a winner or turns maxed out
-         * every time player's play, initiate AI player
-         */
-        if (isWinner() || turnsCount == 9)             // do nothing if there is a winner already or turns maxed out
-            return;
-        for(Button b: buttons) {    //loop over buttons and match with button that initiated click listener
-            if(b.getId() == v.getId() && b.getText().toString().equals("")) {   //if button match and its empty
-                b.setText("X");                                                 //set button text with player's 'X'
-                turnsCount ++;                                                  //increase turns count by one
-            }
-        }
-        if(turnsCount %2 == 1)                                                  //run AI method every second turn
-            playWithAI();                                                       //call AI method
-        isWinner();                                                             //check if there is a winner
-
-    }
-    public void playWithAI() {
+    private void playWithAI() {
         /**
          * randomize turns of AI
          * every time AI plays generate new random btn
          * check if its empty
          * and set text to AI's 'O'
          */
-        int rndBtn = 0;                                             //initiate new variable for random btn place
+        int rndBtn;                                                 //initiate new variable for random btn place
         do {
             rndBtn = (int)(Math.random() * buttons.length);
         }while (!buttons[rndBtn].getText().toString().equals(""));  //generate new numbers with buttons length till it matches an empty button
@@ -154,4 +144,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     }
+    private void reset() {
+        /**
+         * reset game method
+         * create new buttons layout
+         * and add 9 buttons with grid
+         */
+        buttons = new Button[9];                        //create new empty buttons array
+        gridLayout.removeAllViews();                    //remove old buttons from grid layout
+        turnsCount = 0;                                 //reset turns counter on Zero
+        for(int i = 0; i < buttons.length; i ++) {      // loop on buttons array to create new buttons and add them to the layout
+
+            buttons[i] = new Button(this);      //create new button
+            buttons[i].setWidth(50);                    //set button width to 50px
+            buttons[i].setHeight(50);                   //set button height to 50px
+            buttons[i].setTextSize(16);                 //set font size on 16px
+            buttons[i].setId((i + 1) * 10000);          //set button id with loop index * 10000
+            buttons[i].setOnClickListener(this);        //add button on click listener
+            gridLayout.addView(buttons[i]);             //add button to layout
+
+        }
+    }
+
+
 }
