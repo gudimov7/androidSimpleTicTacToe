@@ -40,12 +40,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         }
 
-
-
     }
 
     private void winner() {
-        Toast.makeText(this,"Winner",Toast.LENGTH_SHORT).show();
+        if(buttons[0].getText().toString().equals("X"))
+            Toast.makeText(this,"Winner",Toast.LENGTH_SHORT).show();
 
     }
 
@@ -53,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         for(Button b: buttons) {
             if(b.getId() == v.getId())
-                b.setText("X");
+                b.setText(turnsCount % 2 == 0 ? "X": "O");
         }
         turnsCount ++;
 
