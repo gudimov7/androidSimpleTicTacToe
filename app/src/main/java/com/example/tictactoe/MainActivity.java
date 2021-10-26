@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             buttons[i] = new Button(this);
             buttons[i].setWidth(50);
             buttons[i].setHeight(50);
+            buttons[i].setTextSize(16);
             buttons[i].setId((i + 1) * 10000);
             buttons[i].setOnClickListener(this);
             gridLayout.addView(buttons[i]);
@@ -43,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    private void winner() {
+    private boolean winner() {
         /**
          * Win combinations:
          *
@@ -59,47 +60,60 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         if(btnStrings[0].equals(btnStrings[1]) && btnStrings[1].equals(btnStrings[2]) && !btnStrings[0].equals("")) {
             colorWinner(0, 1, 2);
-            return;
+            return true;
         }
         else if(btnStrings[3].equals(btnStrings[4]) && btnStrings[4].equals(btnStrings[5]) && !btnStrings[3].equals("")) {
             colorWinner(3, 4, 5);
-            return;
+            return true;
         }
         else if(btnStrings[6].equals(btnStrings[7]) && btnStrings[7].equals(btnStrings[8]) && !btnStrings[6].equals("")) {
             colorWinner(6, 7, 8);
-            return;
+            return true;
         }
         else if(btnStrings[0].equals(btnStrings[3]) && btnStrings[3].equals(btnStrings[6]) && !btnStrings[0].equals("")) {
             colorWinner(0, 3, 6);
-            return;
+            return true;
         }
         else if(btnStrings[1].equals(btnStrings[4]) && btnStrings[4].equals(btnStrings[7]) && !btnStrings[1].equals("")) {
             colorWinner(1, 4, 7);
-            return;
+            return true;
         }
         else if(btnStrings[2].equals(btnStrings[5]) && btnStrings[5].equals(btnStrings[8]) && !btnStrings[2].equals("")) {
             colorWinner(2, 5, 8);
-            return;
+            return true;
         }
         else if(btnStrings[0].equals(btnStrings[4]) && btnStrings[4].equals(btnStrings[8]) && !btnStrings[0].equals("")) {
             colorWinner(0, 4, 8);
-            return;
+            return true;
         }
         else if(btnStrings[2].equals(btnStrings[4]) && btnStrings[4].equals(btnStrings[6]) && !btnStrings[2].equals("")) {
             colorWinner(2, 4, 6);
-            return;
+            return true;
         }
+        else return false;
 
     }
     private void colorWinner(int btn1, int btn2, int btn3) {
-        buttons[btn1].setTextColor(Color.RED);
-        buttons[btn2].setTextColor(Color.RED);
-        buttons[btn3].setTextColor(Color.RED);
+        buttons[btn1].setBackgroundColor(Color.RED);
+        buttons[btn1].setTextColor(Color.WHITE);
+        buttons[btn1].setTextSize(20);
+
+        buttons[btn2].setBackgroundColor(Color.RED);
+        buttons[btn2].setTextColor(Color.WHITE);
+        buttons[btn2].setTextSize(20);
+
+        buttons[btn3].setBackgroundColor(Color.RED);
+        buttons[btn3].setTextColor(Color.WHITE);
+        buttons[btn3].setTextSize(20);
+
         Toast.makeText(this, "And the Winner is :" + buttons[btn1].getText().toString(), Toast.LENGTH_LONG).show();
+
     }
 
     @Override
     public void onClick(View v) {
+        if (winner())
+            return;
         for(Button b: buttons) {
             if(b.getId() == v.getId())
                 b.setText(turnsCount % 2 == 0 ? "X": "O");

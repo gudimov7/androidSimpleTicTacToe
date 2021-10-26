@@ -12,8 +12,8 @@
         android:id="@+id/gameTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Tic Tac Toe"
         android:gravity="center"
+        android:text="Tic Tac Toe"
         android:textAlignment="center"
         android:textSize="24sp"
         android:textStyle="bold" />
