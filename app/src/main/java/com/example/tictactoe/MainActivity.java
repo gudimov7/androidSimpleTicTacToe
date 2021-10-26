@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridLayout;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -44,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    private boolean winner() {
+    private boolean isWinner() {
         /**
          * Win combinations:
          *
@@ -59,41 +58,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             btnStrings[i] = buttons[i].getText().toString();
         }
         if(btnStrings[0].equals(btnStrings[1]) && btnStrings[1].equals(btnStrings[2]) && !btnStrings[0].equals("")) {
-            colorWinner(0, 1, 2);
+            promptWinner(0, 1, 2);
             return true;
         }
         else if(btnStrings[3].equals(btnStrings[4]) && btnStrings[4].equals(btnStrings[5]) && !btnStrings[3].equals("")) {
-            colorWinner(3, 4, 5);
+            promptWinner(3, 4, 5);
             return true;
         }
         else if(btnStrings[6].equals(btnStrings[7]) && btnStrings[7].equals(btnStrings[8]) && !btnStrings[6].equals("")) {
-            colorWinner(6, 7, 8);
+            promptWinner(6, 7, 8);
             return true;
         }
         else if(btnStrings[0].equals(btnStrings[3]) && btnStrings[3].equals(btnStrings[6]) && !btnStrings[0].equals("")) {
-            colorWinner(0, 3, 6);
+            promptWinner(0, 3, 6);
             return true;
         }
         else if(btnStrings[1].equals(btnStrings[4]) && btnStrings[4].equals(btnStrings[7]) && !btnStrings[1].equals("")) {
-            colorWinner(1, 4, 7);
+            promptWinner(1, 4, 7);
             return true;
         }
         else if(btnStrings[2].equals(btnStrings[5]) && btnStrings[5].equals(btnStrings[8]) && !btnStrings[2].equals("")) {
-            colorWinner(2, 5, 8);
+            promptWinner(2, 5, 8);
             return true;
         }
         else if(btnStrings[0].equals(btnStrings[4]) && btnStrings[4].equals(btnStrings[8]) && !btnStrings[0].equals("")) {
-            colorWinner(0, 4, 8);
+            promptWinner(0, 4, 8);
             return true;
         }
         else if(btnStrings[2].equals(btnStrings[4]) && btnStrings[4].equals(btnStrings[6]) && !btnStrings[2].equals("")) {
-            colorWinner(2, 4, 6);
+            promptWinner(2, 4, 6);
             return true;
         }
         else return false;
 
     }
-    private void colorWinner(int btn1, int btn2, int btn3) {
+    private void promptWinner(int btn1, int btn2, int btn3) {
         buttons[btn1].setBackgroundColor(Color.RED);
         buttons[btn1].setTextColor(Color.WHITE);
         buttons[btn1].setTextSize(20);
@@ -112,14 +111,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        if (winner())
+        if (isWinner())
             return;
         for(Button b: buttons) {
-            if(b.getId() == v.getId())
-                b.setText(turnsCount % 2 == 0 ? "X": "O");
+            if(b.getId() == v.getId() && b.getText().toString().equals("")) {
+                b.setText("X");
+                turnsCount ++;
+            }
         }
+        if(turnsCount %2 == 1)
+            playWithAI();
+        isWinner();
+
+    }
+    public void playWithAI() {
+        int rndBtn = 0;
+        do {
+            rndBtn = (int)(Math.random() * buttons.length);
+        }while (!buttons[rndBtn].getText().toString().equals(""));
+        buttons[rndBtn].setText("O");
         turnsCount ++;
-        winner();
+
 
     }
 }
